@@ -46,7 +46,7 @@ export default function InputSearch({
     () =>
       throttle(
         (
-          request: { input: string },
+          request: { input: string; types: string[] },
           callback: (results?: readonly PlaceType[]) => void
         ) => {
           (autocompleteService.current as any).getPlacePredictions(
@@ -76,21 +76,24 @@ export default function InputSearch({
       return undefined;
     }
 
-    fetch({ input: inputValue }, (results?: readonly PlaceType[]) => {
-      if (active) {
-        let newOptions: readonly PlaceType[] = [];
+    fetch(
+      { input: inputValue, types: ["airport"] },
+      (results?: readonly PlaceType[]) => {
+        if (active) {
+          let newOptions: readonly PlaceType[] = [];
 
-        if (value) {
-          newOptions = [value];
+          if (value) {
+            newOptions = [value];
+          }
+
+          if (results) {
+            newOptions = [...newOptions, ...results];
+          }
+
+          setOptions(newOptions);
         }
-
-        if (results) {
-          newOptions = [...newOptions, ...results];
-        }
-
-        setOptions(newOptions);
       }
-    });
+    );
 
     return () => {
       active = false;

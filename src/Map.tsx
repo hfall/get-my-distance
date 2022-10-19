@@ -1,25 +1,26 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
-import icon from "./icons/airport.svg";
+import React, { useEffect, useRef, useState } from "react";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
 
 let globalMarkers: any[] = [];
 let polyline: any = null;
 
 function Map({ coords }: any) {
+  const api = (window as any).google;
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.down("sm"));
   const refEl = useRef(null);
   const [map, setMap] = useState<any>();
-  const api = (window as any).google;
   const bounds = new api.maps.LatLngBounds();
   const geocoder = new api.maps.Geocoder();
   // let markers: google.maps.Marker[] = [];
-  let latCache: any[] = [];
-  let lngCache: any[] = [];
+  let latCache: number[] = [];
+  let lngCache: number[] = [];
 
   const showGeocodedAddressOnMap = (asDestination: boolean) => {
     // @ts-ignore:next-line
     const handler = ({ results }: google.maps.GeocoderResponse) => {
       map.fitBounds(bounds.extend(results[0].geometry.location));
-      // latCache.push(results[0].geometry.location.lat());
-      // lngCache.push(results[0].geometry.location.lng());
       globalMarkers.push(
         new api.maps.Marker({
           map,
@@ -55,7 +56,6 @@ function Map({ coords }: any) {
 
   const resetMap = () => {
     for (let i = 0; i < globalMarkers.length; i++) {
-      console.log("clearing: ", globalMarkers[i]);
       globalMarkers[i].setMap(null);
     }
     if (polyline) {
@@ -78,7 +78,7 @@ function Map({ coords }: any) {
       geocoder
         .geocode({ address: cooors[i] })
         .then(showGeocodedAddressOnMap(false))
-        .then((res: any) => {
+        .then((res: number[]) => {
           latCache.push(res[0]);
           lngCache.push(res[1]);
 
@@ -109,7 +109,7 @@ function Map({ coords }: any) {
   useEffect(() => {
     const api = (window as any).google;
     const map = new api.maps.Map(refEl.current, {
-      zoom: 4,
+      zoom: matches ? 3 : 4,
       center: {
         lat: 40.24047041220942,
         lng: -95.16707296219492,
@@ -118,7 +118,9 @@ function Map({ coords }: any) {
     });
     setMap(map);
   }, []);
-  return <div ref={refEl} style={{ height: "400px" }}></div>;
+  return (
+    <div ref={refEl} style={{ height: matches ? "300px" : "400px" }}></div>
+  );
 }
 
 export default React.memo(Map);

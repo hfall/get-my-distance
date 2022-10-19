@@ -65,7 +65,7 @@ export default function Distance() {
     if (typeof window !== "undefined" && !apiLoaded) {
       if (!document.querySelector("#google-maps")) {
         loadScript(
-          `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&types=airport&components=country:us`,
+          `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&components=country:us`,
           document.querySelector("head"),
           "google-maps",
           () => {
