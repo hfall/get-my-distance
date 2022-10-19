@@ -49,7 +49,7 @@ export default function Distance() {
     };
 
     mapService.getDistanceMatrix(request, (resp: any) => {
-      console.log(resp);
+      // console.log(resp);
       if (resp.rows[0].elements[0].status === "ZERO_RESULTS") {
         setError(true);
         return;

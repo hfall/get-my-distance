@@ -114,6 +114,7 @@ function Map({ coords }: any) {
         lat: 40.24047041220942,
         lng: -95.16707296219492,
       },
+      disableDefaultUI: true,
       mapTypeId: api.maps.MapTypeId.TERRAIN,
     });
     setMap(map);
